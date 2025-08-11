@@ -1,0 +1,25 @@
+import mongoose, { Document, Schema, Model, Types } from "mongoose";
+import {IQuestion} from "../interfaces/questionInterface";
+
+const questionSchema: Schema<IQuestion> = new Schema(
+  {
+    title: { type: String, required: true },
+    body: { type: String, required: true },
+    tags: [{ type: String }],
+    author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    votes: {
+      upvotes: { type: Number, default: 0 },
+      downvotes: { type: Number, default: 0 },
+    },
+    views: { type: Number, default: 0 },
+    answers: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    acceptedAnswer: { type: Schema.Types.ObjectId, ref: "Answer" },
+    isPrivate: { type: Boolean, default: false },
+    roomId: { type: Schema.Types.ObjectId, ref: "Room" }
+  },
+  { timestamps: true } 
+);
+
+const Question: Model<IQuestion> = mongoose.model<IQuestion>("Question", questionSchema);
+export default Question;
