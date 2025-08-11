@@ -1,26 +1,44 @@
-import {Router} from 'express';
-
+import { Router } from 'express';
 import Comment from '../models/Comment';
-import { error } from 'console';
-const router=Router();
+import Question from '../models/Question';
+import Answer from '../models/Answer';
 
-router.post("/", async (req,res)=>{
-    try{
-        const comment= new Comment(req.body);
-        const savedComment=await comment.save();
-        res.status(201).json(savedComment);
-    } catch(err:any){
-        res.status(400).json({error:err.message});;
+const router = Router();
+
+router.post("/", async (req, res) => {
+  try {
+    // 1. Create and save comment
+    const comment = new Comment(req.body);
+    const savedComment = await comment.save();
+
+    // 2. Update parent document's comments array
+    if (req.body.parentType === 'question') {
+      await Question.findByIdAndUpdate(
+        req.body.parentId,
+        { $push: { comments: savedComment._id } },
+        { new: true }
+      );
+    } else if (req.body.parentType === 'answer') {
+      await Answer.findByIdAndUpdate(
+        req.body.parentId,
+        { $push: { comments: savedComment._id } },
+        { new: true }
+      );
     }
+
+    res.status(201).json(savedComment);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
-router.get("/",async(req,res)=>{
-    try{
-        const comment=await Comment.find();
-        res.json(comment);
-    }   catch(err:any){
-        res.status(500).json({error:err.message});
-    }
-})
+router.get("/", async (req, res) => {
+  try {
+    const comment = await Comment.find();
+    res.json(comment);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;
