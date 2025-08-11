@@ -7,11 +7,9 @@ const router = Router();
 
 router.post("/", async (req, res) => {
   try {
-    // 1. Create and save comment
     const comment = new Comment(req.body);
     const savedComment = await comment.save();
 
-    // 2. Update parent document's comments array
     if (req.body.parentType === 'question') {
       await Question.findByIdAndUpdate(
         req.body.parentId,
