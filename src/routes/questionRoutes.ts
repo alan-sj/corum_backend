@@ -71,4 +71,15 @@ router.post("/:id/downvote", async (req, res) => {
   }
 });
 
+router.get("/tag/:tagName", async (req, res) => {
+  const { tagName } = req.params;
+
+  try {
+    const questions = await Question.find({ tags: tagName });
+    res.json(questions);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
