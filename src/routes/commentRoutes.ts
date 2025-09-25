@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import Comment from '../models/Comment';
-import Question from '../models/Question';
-import Answer from '../models/Answer';
+import { Router } from "express";
+import Comment from "../models/Comment.js";
+import Question from "../models/Question.js";
+import Answer from "../models/Answer.js";
 
 const router = Router();
 
@@ -10,13 +10,13 @@ router.post("/", async (req, res) => {
     const comment = new Comment(req.body);
     const savedComment = await comment.save();
 
-    if (req.body.parentType === 'question') {
+    if (req.body.parentType === "question") {
       await Question.findByIdAndUpdate(
         req.body.parentId,
         { $push: { comments: savedComment._id } },
         { new: true }
       );
-    } else if (req.body.parentType === 'answer') {
+    } else if (req.body.parentType === "answer") {
       await Answer.findByIdAndUpdate(
         req.body.parentId,
         { $push: { comments: savedComment._id } },

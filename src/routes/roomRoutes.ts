@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import Rooms from '../models/Rooms';
+import { Router } from "express";
+import Rooms from "../models/Rooms.js";
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const room = new Rooms(req.body);
     const savedRoom = await room.save();
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const rooms = await Rooms.find();
     res.json(rooms);
