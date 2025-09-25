@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Model, Types } from "mongoose";
-import {IQuestion} from "../interfaces/questionInterface";
+import { type IQuestion } from "../interfaces/questionInterface.js";
 
 const questionSchema: Schema<IQuestion> = new Schema(
   {
@@ -16,10 +16,13 @@ const questionSchema: Schema<IQuestion> = new Schema(
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     acceptedAnswer: { type: Schema.Types.ObjectId, ref: "Answer" },
     isPrivate: { type: Boolean, default: false },
-    roomId: { type: Schema.Types.ObjectId, ref: "Room" }
+    roomId: { type: Schema.Types.ObjectId, ref: "Room" },
   },
-  { timestamps: true } 
+  { timestamps: true }
 );
 
-const Question: Model<IQuestion> = mongoose.model<IQuestion>("Question", questionSchema);
+const Question: Model<IQuestion> = mongoose.model<IQuestion>(
+  "Question",
+  questionSchema
+);
 export default Question;
