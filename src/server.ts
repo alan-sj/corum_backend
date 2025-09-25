@@ -8,6 +8,7 @@ import answerRoutes from "./routes/answerRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use("/answers", answerRoutes);
 app.use("/comments", commentRoutes);
 app.use("/questions", questionRoutes);
 app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running");
