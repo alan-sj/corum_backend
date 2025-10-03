@@ -23,6 +23,38 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.put("/update/:id", async(req,res) =>{
+  try{ 
+    const updatedQuestion = await Question.findByIdAndUpdate(
+      req.params.id,      
+      { $set: req.body },   
+      { new: true }        
+    );
+    
+    if (!updatedQuestion) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    res.json(updatedQuestion);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/delete/:id", async(req,res) =>{
+  try{
+    const deletedQuestion = await Question.findByIdAndDelete(req.params.id); 
+       
+    if(!deletedQuestion)  {
+      return res.status(404).json({ error: "Question not found"});
+    }
+
+    res.json(deletedQuestion);
+  } catch (err:any) {
+    res.status(500).json({ error : err.message });
+  }
+});
+
 router.post("/:id/upvote", async (req, res) => {
   const { id } = req.params;
 
@@ -83,3 +115,5 @@ router.get("/tag/:tagName", async (req, res) => {
 });
 
 export default router;
+
+

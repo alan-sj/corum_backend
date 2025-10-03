@@ -1,6 +1,6 @@
 import {Router} from 'express';
 
-import Answer from '../models/Answer';
+import Answer from '../models/Answer.js';
 
 const router= Router();
 
@@ -21,6 +21,38 @@ router.get("/",async(req,res)=>{
     } catch(err:any){
         res.status(500).json({error: err.message});
     }
+});
+
+router.put("/update/:id", async(req,res) =>{
+  try{ 
+    const updatedAnswer = await Answer.findByIdAndUpdate(
+      req.params.id,      
+      { $set: req.body },   
+      { new: true }        
+    );
+    
+    if (!updatedAnswer) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+
+    res.json(updatedAnswer);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/delete/:id", async(req,res) =>{
+  try{
+    const deletedAnswer = await Answer.findByIdAndDelete(req.params.id); 
+
+    if(!deletedAnswer)  {
+      return res.status(404).json({ error: "Question not found"});
+    }
+
+    res.json(deletedAnswer);
+  } catch (err:any) {
+    res.status(500).json({ error : err.message });
+  }
 });
 
 export default router;
