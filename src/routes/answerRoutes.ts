@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Answer from "../models/Answer.js";
+import mongoose from "mongoose";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.put("/update/:id", async(req,res) =>{
     );
     
     if (!updatedAnswer) {
-      return res.status(404).json({ error: "Question not found" });
+      return res.status(404).json({ error: "answer not found" });
     }
 
     res.json(updatedAnswer);
@@ -45,7 +46,7 @@ router.delete("/delete/:id", async(req,res) =>{
     const deletedAnswer = await Answer.findByIdAndDelete(req.params.id); 
 
     if(!deletedAnswer)  {
-      return res.status(404).json({ error: "Question not found"});
+      return res.status(404).json({ error: "answer not found"});
     }
 
     res.json(deletedAnswer);
@@ -53,5 +54,54 @@ router.delete("/delete/:id", async(req,res) =>{
     res.status(500).json({ error : err.message });
   }
 });
+
+router.post("/:id/upvote", async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid answer ID" });
+  }
+
+  try {
+    const answer = await Answer.findByIdAndUpdate(
+      id,
+      { $inc: { "votes.upvotes": 1 } },
+      { new: true }
+    );
+
+    if (!answer) {
+      return res.status(404).json({ error: "answer not found" });
+    }
+
+    res.json(answer);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/:id/downvote", async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid answer ID" });
+  }
+
+  try {
+    const answer = await Answer.findByIdAndUpdate(
+      id,
+      { $inc: { "votes.downvotes": 1 } },
+      { new: true }
+    );
+
+    if (!answer) {
+      return res.status(404).json({ error: "answer not found" });
+    }
+
+    res.json(answer);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 export default router;
