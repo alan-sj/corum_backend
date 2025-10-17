@@ -3,7 +3,7 @@ import {Document,Types} from 'mongoose';
 export interface IQuestion extends Document {
   title: string;
   body: string;
-  tags: string[];
+  tags: Types.ObjectId[];
   author: Types.ObjectId; 
   createdAt: Date;
   updatedAt: Date;
