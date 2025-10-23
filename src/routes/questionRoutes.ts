@@ -230,9 +230,16 @@ router.post("/filter", checkToken, async (req: AuthRequest, res) => {
     const questions = await Question.find({ tags: { $in: tagIds } })
       .populate("tags", "tagName")
       .populate("author", "username")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const modifiedQuestions = questions.map((q) => ({
+      ...q,
+      comments: q.comments?.length || 0,
+    }));
+
     const username = req.user?.username;
-    res.json({ username: username, questions: questions });
+    res.json({ username: username, questions: modifiedQuestions });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
