@@ -5,6 +5,11 @@ const answerSchema: Schema<IAnswer> = new Schema(
   {
     body: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    questionId: {
+      type: Schema.Types.ObjectId,
+      ref: "Question",
+      required: true,
+    },
     votes: {
       upvotes: { type: Number, default: 0 },
       downvotes: { type: Number, default: 0 },

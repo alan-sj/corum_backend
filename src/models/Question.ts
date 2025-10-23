@@ -5,7 +5,7 @@ const questionSchema: Schema<IQuestion> = new Schema(
   {
     title: { type: String, required: true },
     body: { type: String, required: true },
-    tags: [{ type: Schema.Types.ObjectId, ref:"Tag" }],
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     votes: {
       upvotes: { type: Number, default: 0 },
