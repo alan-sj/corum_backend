@@ -51,15 +51,36 @@ router.get("/", checkToken, async (req: AuthRequest, res) => {
     const questions = await Question.find()
       .populate("tags", "tagName")
       .populate("author", "username")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const modifiedQuestions = questions.map((q) => ({
+      ...q,
+      comments: q.comments?.length || 0,
+    }));
 
     const username = req.user?.username;
-    res.json({ username: username, questions: questions });
+    res.json({ username: username, questions: modifiedQuestions });
     console.log("All questions fetched!");
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });
+
+// router.get("/", checkToken, async (req: AuthRequest, res) => {
+//   try {
+//     const questions = await Question.find()
+//       .populate("tags", "tagName")
+//       .populate("author", "username")
+//       .sort({ createdAt: -1 });
+
+//     const username = req.user?.username;
+//     res.json({ username: username, questions: questions });
+//     console.log("All questions fetched!");
+//   } catch (err: any) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 router.get("/tags", async (req, res: Response) => {
   try {
